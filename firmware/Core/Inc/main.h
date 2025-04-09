@@ -167,8 +167,8 @@ void Error_Handler(void);
 #define LCD_B3_GPIO_Port GPIOJ
 #define OTG_FS_OverCurrent_Pin GPIO_PIN_4
 #define OTG_FS_OverCurrent_GPIO_Port GPIOD
-#define SDMMC_CMD_Pin GPIO_PIN_2
-#define SDMMC_CMD_GPIO_Port GPIOD
+#define SDMMC_D0_Pin GPIO_PIN_2
+#define SDMMC_D0_GPIO_Port GPIOD
 #define TP3_Pin GPIO_PIN_15
 #define TP3_GPIO_Port GPIOH
 #define ARDUINO_SCK_D13_Pin GPIO_PIN_1
@@ -327,8 +327,6 @@ void Error_Handler(void);
 #define DCMI_D0_GPIO_Port GPIOH
 #define DCMI_D2_Pin GPIO_PIN_11
 #define DCMI_D2_GPIO_Port GPIOH
-#define RMII_MDIO_Pin GPIO_PIN_2
-#define RMII_MDIO_GPIO_Port GPIOA
 #define ULPI_CLK_Pin GPIO_PIN_5
 #define ULPI_CLK_GPIO_Port GPIOA
 #define RMII_RXD1_Pin GPIO_PIN_5
@@ -353,8 +351,6 @@ void Error_Handler(void);
 #define LCD_SDA_GPIO_Port GPIOH
 #define DCMI_D1_Pin GPIO_PIN_10
 #define DCMI_D1_GPIO_Port GPIOH
-#define ULPI_D0_Pin GPIO_PIN_3
-#define ULPI_D0_GPIO_Port GPIOA
 #define RMII_CRS_DV_Pin GPIO_PIN_7
 #define RMII_CRS_DV_GPIO_Port GPIOA
 #define ULPI_D2_Pin GPIO_PIN_1
