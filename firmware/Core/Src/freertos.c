@@ -54,6 +54,7 @@ osThreadId defaultTaskHandle;
 osThreadId LEDTASKHandle;
 osThreadId TaskGIVEHandle;
 osThreadId TaskTAKEHandle;
+osThreadId myTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -64,6 +65,7 @@ void StartDefaultTask(void const * argument);
 void LEDtask(void const * argument);
 void StartTaskGive(void const * argument);
 void SartTaskTakes(void const * argument);
+void StartTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -138,6 +140,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of TaskTAKE */
   osThreadDef(TaskTAKE, SartTaskTakes, osPriorityIdle, 0, 128);
   TaskTAKEHandle = osThreadCreate(osThread(TaskTAKE), NULL);
+
+  /* definition and creation of myTask */
+  osThreadDef(myTask, StartTask, osPriorityIdle, 0, 128);
+  myTaskHandle = osThreadCreate(osThread(myTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -224,6 +230,36 @@ void SartTaskTakes(void const * argument)
 	    }
   }
   /* USER CODE END SartTaskTakes */
+}
+
+/* USER CODE BEGIN Header_StartTask */
+/**
+* @brief Function implementing the myTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask */
+void StartTask(void const * argument)
+{
+  /* USER CODE BEGIN StartTask */
+  /* Infinite loop */
+  for(;;)
+  {
+	    printf("taskTake : en attente du sémaphore (timeout 1s)...\r\n");
+
+	    // Timeout : 1000 ms
+	    if (xSemaphoreTake(xSemaphore, 1000 / portTICK_PERIOD_MS) == pdTRUE)
+	    {
+	      printf("taskTake : sémaphore pris avec succès\r\n");
+	    }
+	    else
+	    {
+	      printf("ERREUR : sémaphore non reçu, reset du système !\r\n");
+	      HAL_Delay(100); // petit délai pour envoyer le message
+	      NVIC_SystemReset(); // 🔁 reset logiciel STM32
+	    }
+  }
+  /* USER CODE END StartTask */
 }
 
 /* Private application code --------------------------------------------------*/
