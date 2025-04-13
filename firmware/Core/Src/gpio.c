@@ -48,7 +48,6 @@
      PE6   ------> DCMI_D7
      PG13   ------> ETH_TXD0
      PB9   ------> I2C1_SDA
-     PB7   ------> USART1_RX
      PB6   ------> QUADSPI_BK1_NCS
      PG15   ------> FMC_SDNCAS
      PG11   ------> ETH_TX_EN
@@ -81,7 +80,6 @@
      PI9   ------> LTDC_VSYNC
      PH14   ------> DCMI_D4
      PI0   ------> S_TIM5_CH4
-     PA9   ------> USART1_TX
      PK1   ------> LTDC_G6
      PK2   ------> LTDC_G7
      PC9   ------> SDMMC1_D1
@@ -307,14 +305,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : VCP_RX_Pin */
-  GPIO_InitStruct.Pin = VCP_RX_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-  HAL_GPIO_Init(VCP_RX_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : QSPI_NCS_Pin */
   GPIO_InitStruct.Pin = QSPI_NCS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -518,14 +508,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF2_TIM5;
   HAL_GPIO_Init(ARDUINO_PWM_CS_D5_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : VCP_TX_Pin */
-  GPIO_InitStruct.Pin = VCP_TX_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-  HAL_GPIO_Init(VCP_TX_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PI11 */
   GPIO_InitStruct.Pin = GPIO_PIN_11;
