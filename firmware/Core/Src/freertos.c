@@ -199,13 +199,19 @@ void LEDtask(void const * argument)
 void StartTaskGive(void const * argument)
 {
   /* USER CODE BEGIN StartTaskGive */
+	uint32_t delayMs = 100;  // départ à 100 ms
   /* Infinite loop */
   for(;;)
   {
-	    printf("taskGive : je vais donner le sémaphore\r\n");
+	    printf("taskGive : je vais donner le sémaphore après %lu ms\r\n", delayMs);
+	    vTaskDelay(delayMs / portTICK_PERIOD_MS);
+
 	    xSemaphoreGive(xSemaphore);
 	    printf("taskGive : sémaphore donné\r\n");
-	    vTaskDelay(100 / portTICK_PERIOD_MS);
+
+	    if (delayMs < 2000) {
+	      delayMs += 100;
+	    }
   }
   /* USER CODE END StartTaskGive */
 }

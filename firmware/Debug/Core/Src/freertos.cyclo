@@ -3,6 +3,6 @@
 ../Core/Src/freertos.c:93:6:MX_FREERTOS_Init	2
 ../Core/Src/freertos.c:161:6:StartDefaultTask	1
 ../Core/Src/freertos.c:179:6:LEDtask	1
-../Core/Src/freertos.c:199:6:StartTaskGive	1
-../Core/Src/freertos.c:220:6:SartTaskTakes	2
-../Core/Src/freertos.c:242:6:StartTask	1
+../Core/Src/freertos.c:199:6:StartTaskGive	2
+../Core/Src/freertos.c:226:6:SartTaskTakes	2
+../Core/Src/freertos.c:248:6:StartTask	1
