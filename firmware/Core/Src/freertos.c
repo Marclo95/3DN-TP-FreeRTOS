@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "usart.h"
 #include "stdio.h"
+#include "semphr.h"  // <- nécessaire pour xSemaphoreCreateBinary, xSemaphoreTake, etc.
 
 /* USER CODE END Includes */
 
@@ -47,10 +48,12 @@ extern UART_HandleTypeDef huart2;
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+SemaphoreHandle_t xSemaphore;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId LEDTASKHandle;
+osThreadId TaskGIVEHandle;
+osThreadId TaskTAKEHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -59,6 +62,8 @@ osThreadId LEDTASKHandle;
 
 void StartDefaultTask(void const * argument);
 void LEDtask(void const * argument);
+void StartTaskGive(void const * argument);
+void SartTaskTakes(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -94,6 +99,19 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
+	  // Créer le sémaphore binaire
+	  xSemaphore = xSemaphoreCreateBinary();
+
+	  if (xSemaphore != NULL)
+	  {
+	    // Création des deux nouvelles tâches
+		  osThreadDef(TaskTAKE, SartTaskTakes, osPriorityHigh, 0, 128);
+		  TaskTAKEHandle = osThreadCreate(osThread(TaskTAKE), NULL);
+
+		  osThreadDef(TaskGIVE, StartTaskGive, osPriorityBelowNormal, 0, 128);
+		  TaskGIVEHandle = osThreadCreate(osThread(TaskGIVE), NULL);
+	  }
+
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -112,6 +130,14 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of LEDTASK */
   osThreadDef(LEDTASK, LEDtask, osPriorityNormal, 0, 128);
   LEDTASKHandle = osThreadCreate(osThread(LEDTASK), NULL);
+
+  /* definition and creation of TaskGIVE */
+  osThreadDef(TaskGIVE, StartTaskGive, osPriorityIdle, 0, 128);
+  TaskGIVEHandle = osThreadCreate(osThread(TaskGIVE), NULL);
+
+  /* definition and creation of TaskTAKE */
+  osThreadDef(TaskTAKE, SartTaskTakes, osPriorityIdle, 0, 128);
+  TaskTAKEHandle = osThreadCreate(osThread(TaskTAKE), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -155,6 +181,49 @@ void LEDtask(void const * argument)
 	    vTaskDelay(100 / portTICK_PERIOD_MS);   // Attente de 100 ms
   }
   /* USER CODE END LEDtask */
+}
+
+/* USER CODE BEGIN Header_StartTaskGive */
+/**
+* @brief Function implementing the TaskGIVE thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTaskGive */
+void StartTaskGive(void const * argument)
+{
+  /* USER CODE BEGIN StartTaskGive */
+  /* Infinite loop */
+  for(;;)
+  {
+	    printf("taskGive : je vais donner le sémaphore\r\n");
+	    xSemaphoreGive(xSemaphore);
+	    printf("taskGive : sémaphore donné\r\n");
+	    vTaskDelay(100 / portTICK_PERIOD_MS);
+  }
+  /* USER CODE END StartTaskGive */
+}
+
+/* USER CODE BEGIN Header_SartTaskTakes */
+/**
+* @brief Function implementing the TaskTAKE thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_SartTaskTakes */
+void SartTaskTakes(void const * argument)
+{
+  /* USER CODE BEGIN SartTaskTakes */
+  /* Infinite loop */
+  for(;;)
+  {
+	    printf("taskTake : en attente du sémaphore\r\n");
+	    if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
+	    {
+	      printf("taskTake : sémaphore pris avec succès\r\n");
+	    }
+  }
+  /* USER CODE END SartTaskTakes */
 }
 
 /* Private application code --------------------------------------------------*/
