@@ -49,6 +49,7 @@ extern UART_HandleTypeDef huart2;
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 SemaphoreHandle_t xSemaphore;
+QueueHandle_t myQueue;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId LEDTASKHandle;
@@ -121,6 +122,12 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
+	  myQueue = xQueueCreate(10, sizeof(uint32_t)); // 10 éléments de 4 octets
+
+	  if (myQueue == NULL)
+	  {
+	      printf("Erreur : Queue non créée !\r\n");
+	  }
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -198,21 +205,27 @@ void LEDtask(void const * argument)
 /* USER CODE END Header_StartTaskGive */
 void StartTaskGive(void const * argument)
 {
-  /* USER CODE BEGIN StartTaskGive */
-	uint32_t delayMs = 100;  // départ à 100 ms
-  /* Infinite loop */
+  uint32_t delayMs = 100;
+  uint32_t timerValue = 0;
+
   for(;;)
   {
-	    printf("taskGive : je vais donner le sémaphore après %lu ms\r\n", delayMs);
-	    vTaskDelay(delayMs / portTICK_PERIOD_MS);
+    timerValue = HAL_GetTick(); // récupère le temps système en ms
 
-	    xSemaphoreGive(xSemaphore);
-	    printf("taskGive : sémaphore donné\r\n");
+    printf("taskGive : je vais envoyer %lu dans la queue\r\n", timerValue);
 
-	    if (delayMs < 2000) {
-	      delayMs += 100;
-	    }
+    if (xQueueSend(myQueue, &timerValue, 10 / portTICK_PERIOD_MS) != pdPASS)
+    {
+      printf("Erreur : envoi dans la queue échoué\r\n");
+    }
+
+    vTaskDelay(delayMs / portTICK_PERIOD_MS);
+
+    if (delayMs < 2000) {
+      delayMs += 100;
+    }
   }
+
   /* USER CODE END StartTaskGive */
 }
 
@@ -225,15 +238,14 @@ void StartTaskGive(void const * argument)
 /* USER CODE END Header_SartTaskTakes */
 void SartTaskTakes(void const * argument)
 {
-  /* USER CODE BEGIN SartTaskTakes */
-  /* Infinite loop */
+  uint32_t receivedValue = 0;
+
   for(;;)
   {
-	    printf("taskTake : en attente du sémaphore\r\n");
-	    if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
-	    {
-	      printf("taskTake : sémaphore pris avec succès\r\n");
-	    }
+    if (xQueueReceive(myQueue, &receivedValue, portMAX_DELAY) == pdTRUE)
+    {
+      printf("taskTake : valeur reçue = %lu ms\r\n", receivedValue);
+    }
   }
   /* USER CODE END SartTaskTakes */
 }
