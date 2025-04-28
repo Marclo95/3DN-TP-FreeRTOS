@@ -21,9 +21,15 @@ Réponse :   gpio.h
 Réponse : portTICK_PERIOD_MS est une macro utilisée dans FreeRTOS pour convertir une période de temps spécifiée en millisecondes au nombre de ticks du système. Cela permet d'abstraire la durée réelle entre les ticks du système, qui peut varier en fonction de la configuration de FreeRTOS et de la fréquence du processeur. L'utilisation de cette macro garantit que le délai spécifié dans vTaskDelay() est indépendant de la configuration du système d'exploitation en temps réel et du matériel
 
 1.2 Sémaphores pour la synchronisation
-2.6 Changez les priorités. Expliquez les changements dans l’affichage.
-Réponse : taskTake est plus fréquemment exécutée car de priorité plus élevée, elle préempte donc taskGive dès qu'elle est prête à s'exécuter. Cela signifie que juste après que taskGive donne le sémaphore, taskTake prendra le contrôle presque immédiatement pour tenter de prendre le sémaphore.
-Les messages taskTake seront plus fréquents, et les messages taskGive seront affichés avec du retard
+
+1.2.6 Changez les priorités. Expliquez les changements dans l’affichage.
+Réponse : taskTake est plus fréquemment exécutée car de priorité plus élevée, elle préempte donc taskGive dès qu'elle est prête à s'exécuter. Cela signifie que juste après que taskGive donne le sémaphore, taskTake prendra le contrôle presque immédiatement pour tenter de prendre le sémaphore. Les messages taskTake seront plus fréquents, et les messages taskGive seront affichés avec du retard
+
+1.5.11 Observez attentivement la sortie dans la console. Expliquez d’où vient le problème.
+Réponse : L'utilisation concurrente de printf par plusieurs tâches sans une bonne synchronisation peut conduire à des corruptions de données. Cela se produit parce que l'accès à l'UART (ou à tout autre ressource partagée) n'est pas protégé.
+
+1.5.12 Proposez une solution en utilisant un sémaphore Mutex.
+
 
 
 

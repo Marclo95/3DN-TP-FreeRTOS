@@ -38,7 +38,11 @@ extern UART_HandleTypeDef huart2;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define STACK_SIZE 256
+#define TASK1_PRIORITY 1
+#define TASK2_PRIORITY 2
+#define TASK1_DELAY 1
+#define TASK2_DELAY 2
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,7 +63,7 @@ osThreadId myTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
+void task_bug(void * pvParameters);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
@@ -93,7 +97,7 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
-
+	BaseType_t ret;
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -154,6 +158,11 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  ret = xTaskCreate(task_bug, "Tache 1", STACK_SIZE, (void *) TASK1_DELAY, TASK1_PRIORITY, NULL);
+  configASSERT(pdPASS == ret);
+
+  ret = xTaskCreate(task_bug, "Tache 2", STACK_SIZE, (void *) TASK2_DELAY, TASK2_PRIORITY, NULL);
+  configASSERT(pdPASS == ret);
   /* USER CODE END RTOS_THREADS */
 
 }
@@ -229,6 +238,7 @@ void StartTaskGive(void const * argument)
   /* USER CODE END StartTaskGive */
 }
 
+
 /* USER CODE BEGIN Header_SartTaskTakes */
 /**
 * @brief Function implementing the TaskTAKE thread.
@@ -278,6 +288,18 @@ void StartTask(void const * argument)
 	    }
   }
   /* USER CODE END StartTask */
+}
+
+/* USER CODE END Header_task_bug */
+void task_bug(void * pvParameters)
+{
+    TickType_t delay = (TickType_t) pvParameters;
+
+    for(;;)
+    {
+        printf("Je suis %s et je m'endors pour %lu ticks\r\n", pcTaskGetName(NULL), delay);
+        vTaskDelay(delay);
+    }
 }
 
 /* Private application code --------------------------------------------------*/
