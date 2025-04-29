@@ -1,8 +1,3 @@
-../Drivers/CMSIS/Include/core_cm7.h:2147:34:__NVIC_SystemReset	1
-../Core/Src/freertos.c:76:6:vApplicationGetIdleTaskMemory	1
-../Core/Src/freertos.c:89:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:133:6:StartDefaultTask	1
-../Core/Src/freertos.c:144:6:LEDtask	1
-../Core/Src/freertos.c:157:6:StartTaskGive	2
-../Core/Src/freertos.c:179:6:StartTaskTake	2
-../Core/Src/freertos.c:193:6:StartTask	1
+../Core/Src/freertos.c:67:6:MX_FREERTOS_Init	4
+../Core/Src/freertos.c:231:6:task_bug	1
+../Core/Src/freertos.c:250:6:vApplicationGetIdleTaskMemory	1

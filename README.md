@@ -29,6 +29,32 @@ Réponse : taskTake est plus fréquemment exécutée car de priorité plus élev
 Réponse : L'utilisation concurrente de printf par plusieurs tâches sans une bonne synchronisation peut conduire à des corruptions de données. Cela se produit parce que l'accès à l'UART (ou à tout autre ressource partagée) n'est pas protégé.
 
 1.5.12 Proposez une solution en utilisant un sémaphore Mutex.
+Réponse : 
+Étape 1: Déclarer le Mutex
+SemaphoreHandle_t xMutex;
+Étape 2: Créer le Mutex
+Ensuite, dans le main(), créez le mutex :
+    xMutex = xSemaphoreCreateMutex();
+    configASSERT(xMutex != NULL);
+Étape 3: Utiliser le Mutex autour de printf
+void task_bug(void * pvParameters)
+{
+    /* USER CODE BEGIN task_bug */
+    TickType_t delay = (TickType_t) pvParameters;
+
+    for(;;)
+    {
+        xSemaphoreTake(xMutex, portMAX_DELAY);
+        printf("Je suis %s, je dors %lu ticks\r\n", pcTaskGetName(NULL), delay);
+        xSemaphoreGive(xMutex);
+        vTaskDelay(delay);
+    }
+    /* USER CODE END task_bug */
+}
+Étape 4:Ajouter l'include pour eviter les erreur
+#include "semphr.h"
+
+2.1.2 Modifier la fonction pour faire apparaître la liste des arguments.
 
 
 
